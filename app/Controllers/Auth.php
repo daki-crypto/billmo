@@ -72,7 +72,7 @@ class Auth extends BaseController
             'user_role' => $user['role'],
         ]);
 
-        return $this->response->setJSON(['success' => true, 'message' => 'Login successful', 'redirect' => '/']);
+        return redirect()->to('/');
     }
 
     /**
