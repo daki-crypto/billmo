@@ -19,7 +19,7 @@ $routes->get('auth/logout', 'Auth::logout', ['filter' => 'auth']);
 // Default route
 $routes->get('/', 'Home::index', ['filter' => 'auth']);
 
-// Profile routess
+// Profile routes
 $routes->group('profile', ['filter' => 'auth'], static function ($routes) {
     $routes->get('', 'ProfileController::index');
     $routes->post('update', 'ProfileController::update');
