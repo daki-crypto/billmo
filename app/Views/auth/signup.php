@@ -1,4 +1,4 @@
-<?php
+<!--<?php
 // Signup/Registration view
 ?>
 <!DOCTYPE html>
@@ -328,3 +328,4 @@
     </div>
 </body>
 </html>
+                    -->

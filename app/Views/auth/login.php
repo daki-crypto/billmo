@@ -257,11 +257,6 @@
 
                 <button type="submit" class="btn">Login</button>
             </form>
-
-            <div class="signup-section">
-                <span>Don't have an account? </span>
-                <a href="<?= base_url('auth/signup') ?>">Sign Up</a>
-            </div>
         </div>
     </div>
 </body>
