@@ -26,7 +26,7 @@ $routes->group('profile', ['filter' => 'auth'], static function ($routes) {
     $routes->post('change-password', 'ProfileController::changePassword');
     $routes->post('reset-password', 'ProfileController::resetPassword');
 });
-//tite
+
 
 // Test database connection
 $routes->get('/test', 'Home::testdb');
