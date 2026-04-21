@@ -39,13 +39,13 @@ class Auth extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            return $this->response->setJSON(['success' => false, 'message' => 'Validation failed', 'errors' => $this->validator->getErrors()]);
         }
 
         $user = $this->userModel->getUserByEmail($email);
 
         if (!$user) {
-            return redirect()->back()->with('error', 'Email or password is incorrect');
+            return $this->response->setJSON(['success' => false, 'message' => 'Email or password is incorrect']);
         }
 
         $passwordMatches = password_verify($password, $user['password']);
@@ -59,7 +59,7 @@ class Auth extends BaseController
         }
 
         if (! $passwordMatches) {
-            return redirect()->back()->with('error', 'Email or password is incorrect');
+            return $this->response->setJSON(['success' => false, 'message' => 'Email or password is incorrect']);
         }
 
         session()->regenerate();
@@ -72,7 +72,7 @@ class Auth extends BaseController
             'user_role' => $user['role'],
         ]);
 
-        return redirect()->to('/');
+        return $this->response->setJSON(['success' => true, 'message' => 'Login successful', 'redirect' => '/']);
     }
 
     /**
@@ -111,13 +111,13 @@ class Auth extends BaseController
         ];
 
         if (!$this->validate($rules, $messages)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            return $this->response->setJSON(['success' => false, 'message' => 'Validation failed', 'errors' => $this->validator->getErrors()]);
         }
 
         // Check if email already exists
         $existingUser = $this->userModel->getUserByEmail($email);
         if ($existingUser) {
-            return redirect()->back()->withInput()->with('error', 'Email already registered');
+            return $this->response->setJSON(['success' => false, 'message' => 'Email already registered']);
         }
 
         // Create new user with 'normal' role
@@ -128,7 +128,7 @@ class Auth extends BaseController
             'role'      => 'normal',
         ]);
 
-        return redirect()->to('/auth/login')->with('success', 'Account created successfully! Please login with your credentials.');
+        return $this->response->setJSON(['success' => true, 'message' => 'Account created successfully! Please login with your credentials.', 'redirect' => '/auth/login']);
     }
 
     /**

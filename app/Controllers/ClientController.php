@@ -77,11 +77,11 @@ class ClientController extends BaseController
     public function store()
     {
         if (!session()->has('user_id')) {
-            return redirect()->to('/auth/login');
+            return $this->response->setJSON(['success' => false, 'message' => 'Unauthorized'])->setStatusCode(401);
         }
 
         if (session()->get('user_role') !== 'admin') {
-            return redirect()->to('/')->with('error', 'Only admins can manage clients.');
+            return $this->response->setJSON(['success' => false, 'message' => 'Only admins can manage clients.'])->setStatusCode(403);
         }
 
         $rules = [
@@ -91,7 +91,7 @@ class ClientController extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            return $this->response->setJSON(['success' => false, 'message' => 'Validation failed', 'errors' => $this->validator->getErrors()]);
         }
 
         $this->clientModel->insert([
@@ -101,10 +101,10 @@ class ClientController extends BaseController
         ]);
 
         if ($this->clientModel->errors() !== []) {
-            return redirect()->back()->withInput()->with('errors', $this->clientModel->errors());
+            return $this->response->setJSON(['success' => false, 'message' => 'Database error', 'errors' => $this->clientModel->errors()]);
         }
 
-        return redirect()->to('/clients')->with('success', 'Client created successfully!');
+        return $this->response->setJSON(['success' => true, 'message' => 'Client created successfully!', 'redirect' => '/clients']);
     }
 
     /**
@@ -138,20 +138,20 @@ class ClientController extends BaseController
     public function update($id = null)
     {
         if (!session()->has('user_id')) {
-            return redirect()->to('/auth/login');
+            return $this->response->setJSON(['success' => false, 'message' => 'Unauthorized'])->setStatusCode(401);
         }
 
         if (session()->get('user_role') !== 'admin') {
-            return redirect()->to('/')->with('error', 'Only admins can manage clients.');
+            return $this->response->setJSON(['success' => false, 'message' => 'Only admins can manage clients.'])->setStatusCode(403);
         }
 
         if (!$id) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            return $this->response->setJSON(['success' => false, 'message' => 'Client not found'])->setStatusCode(404);
         }
 
         $client = $this->clientModel->getClientById($id);
         if (!$client) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            return $this->response->setJSON(['success' => false, 'message' => 'Client not found'])->setStatusCode(404);
         }
 
         $rules = [
@@ -161,7 +161,7 @@ class ClientController extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            return $this->response->setJSON(['success' => false, 'message' => 'Validation failed', 'errors' => $this->validator->getErrors()]);
         }
 
         $updated = $this->clientModel->update($id, [
@@ -172,10 +172,10 @@ class ClientController extends BaseController
         ]);
 
         if (! $updated) {
-            return redirect()->back()->withInput()->with('errors', $this->clientModel->errors());
+            return $this->response->setJSON(['success' => false, 'message' => 'Database error', 'errors' => $this->clientModel->errors()]);
         }
 
-        return redirect()->to('/clients')->with('success', 'Client updated successfully!');
+        return $this->response->setJSON(['success' => true, 'message' => 'Client updated successfully!', 'redirect' => '/clients']);
     }
 
     /**
@@ -184,23 +184,23 @@ class ClientController extends BaseController
     public function delete($id = null)
     {
         if (!session()->has('user_id')) {
-            return redirect()->to('/auth/login');
+            return $this->response->setJSON(['success' => false, 'message' => 'Unauthorized'])->setStatusCode(401);
         }
 
         if (session()->get('user_role') !== 'admin') {
-            return redirect()->to('/')->with('error', 'Only admins can manage clients.');
+            return $this->response->setJSON(['success' => false, 'message' => 'Only admins can manage clients.'])->setStatusCode(403);
         }
 
         if (!$id) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            return $this->response->setJSON(['success' => false, 'message' => 'Client not found'])->setStatusCode(404);
         }
 
         $client = $this->clientModel->getClientById($id);
         if (!$client) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            return $this->response->setJSON(['success' => false, 'message' => 'Client not found'])->setStatusCode(404);
         }
 
         $this->clientModel->delete($id);
-        return redirect()->to('/clients')->with('success', 'Client deleted successfully!');
+        return $this->response->setJSON(['success' => true, 'message' => 'Client deleted successfully!', 'redirect' => '/clients']);
     }
 }

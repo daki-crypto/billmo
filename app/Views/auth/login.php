@@ -8,6 +8,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - E-Billing System</title>
     <style>
+        :root {
+            --app-bg: #eff3eb;
+            --surface: rgba(255, 255, 255, 0.92);
+            --surface-strong: #ffffff;
+            --text-main: #14231d;
+            --text-muted: #6d7b72;
+            --line: rgba(20, 35, 29, 0.1);
+            --accent: #176a43;
+            --accent-strong: #0f4c30;
+            --accent-soft: #dff1e6;
+            --shadow-soft: 0 18px 45px rgba(20, 35, 29, 0.08);
+            --shadow-card: 0 10px 28px rgba(20, 35, 29, 0.08);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -15,44 +29,50 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: radial-gradient(circle at 60% 40%, #3498db 0%, #2c3e50 100%);
+            font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(23, 106, 67, 0.12), transparent 28%),
+                linear-gradient(180deg, #f7faf5 0%, var(--app-bg) 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: var(--text-main);
         }
 
         .login-outer {
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding: 24px;
         }
 
         .login-logo {
             width: 90px;
             height: 90px;
-            background: #fff;
+            background: var(--surface-strong);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 16px rgba(44, 62, 80, 0.13);
+            box-shadow: var(--shadow-soft);
             margin-bottom: -45px;
             z-index: 2;
             position: relative;
         }
 
         .login-container {
-            background: #fff;
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.85);
             padding: 56px 36px 36px;
-            border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(52, 152, 219, 0.10);
+            border-radius: 28px;
+            box-shadow: var(--shadow-card);
             width: 100%;
-            max-width: 380px;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            backdrop-filter: blur(18px);
         }
 
         .logo {
@@ -62,7 +82,7 @@
             margin-bottom: 28px;
             font-size: 34px;
             font-weight: bold;
-            color: #2c3e50;
+            color: var(--text-main);
             letter-spacing: 1px;
         }
 
@@ -74,11 +94,11 @@
         }
 
         .input-icon {
-            background: #3498db;
+            background: linear-gradient(135deg, #1c7d52, #0f4c30);
             color: #fff;
             padding: 0 14px;
-            border-radius: 5px 0 0 5px;
-            height: 44px;
+            border-radius: 16px 0 0 16px;
+            height: 50px;
             display: flex;
             align-items: center;
             font-size: 18px;
@@ -89,18 +109,20 @@
         .form-group input[type="password"],
         .form-group input[type="text"] {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 0 5px 5px 0;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 0 16px 16px 0;
             font-size: 15px;
             transition: border-color 0.3s;
-            height: 44px;
+            height: 50px;
+            background: #f8fbf5;
+            color: var(--text-main);
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.18);
+            border-color: rgba(23, 106, 67, 0.4);
+            box-shadow: 0 0 0 4px rgba(23, 106, 67, 0.1);
         }
 
         .remember-row {
@@ -112,10 +134,11 @@
 
         .remember-row input[type="checkbox"] {
             margin-right: 8px;
+            accent-color: var(--accent);
         }
 
         .remember-row label {
-            color: #444;
+            color: var(--text-muted);
             font-size: 14px;
             font-weight: 400;
         }
@@ -123,38 +146,34 @@
         .btn {
             width: 100%;
             padding: 13px;
-            background: linear-gradient(90deg, #3498db 60%, #2980b9 100%);
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
             color: #fff;
             border: none;
-            border-radius: 6px;
+            border-radius: 999px;
             font-size: 17px;
             font-weight: 700;
             cursor: pointer;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        .btn:hover {
+            filter: brightness(1.04);
+            transform: translateY(-1px);
         }
 
         .alert {
             padding: 12px;
             margin-bottom: 20px;
-            border-radius: 4px;
-            border-left: 4px solid;
+            border-radius: 16px;
+            border: 1px solid transparent;
             width: 100%;
         }
 
         .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border-color: #f5c6cb;
-        }
-
-        .signup-section {
-            margin-top: 18px;
-            text-align: center;
-        }
-
-        .signup-section a {
-            color: #28a745;
-            font-weight: 600;
-            text-decoration: underline;
+            background-color: #fdf1f1;
+            color: #8d3434;
+            border-color: rgba(216, 90, 90, 0.16);
         }
 
         .password-mask-text {
@@ -208,7 +227,7 @@
                         <stop offset="1" stop-color="#ff4e00"/>
                     </linearGradient>
                 </defs>
-                <circle cx="16" cy="16" r="16" fill="#3498db"/>
+                <circle cx="16" cy="16" r="16" fill="#176a43"/>
                 <path d="M18 2L6 18H15L14 30L26 14H17L18 2Z" fill="url(#bolt-gradient)"/>
             </svg>
         </div>

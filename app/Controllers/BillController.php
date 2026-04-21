@@ -78,7 +78,7 @@ class BillController extends BaseController
      */
     public function store()
     {
-        return redirect()->to('/bills')->with('error', 'Admins can only view bills created by normal users.');
+        return $this->response->setJSON(['success' => false, 'message' => 'Admins can only view bills created by normal users.'])->setStatusCode(403);
     }
 
     /**
@@ -86,7 +86,7 @@ class BillController extends BaseController
      */
     public function edit($id = null)
     {
-        return redirect()->to('/bills')->with('error', 'Admins can only view bills created by normal users.');
+        return $this->response->setJSON(['success' => false, 'message' => 'Admins can only view bills created by normal users.'])->setStatusCode(403);
     }
 
     /**
@@ -94,7 +94,7 @@ class BillController extends BaseController
      */
     public function update($id = null)
     {
-        return redirect()->to('/bills')->with('error', 'Admins can only view bills created by normal users.');
+        return $this->response->setJSON(['success' => false, 'message' => 'Admins can only view bills created by normal users.'])->setStatusCode(403);
     }
 
     /**
@@ -102,7 +102,7 @@ class BillController extends BaseController
      */
     public function delete($id = null)
     {
-        return redirect()->to('/bills')->with('error', 'Admins can only view bills created by normal users.');
+        return $this->response->setJSON(['success' => false, 'message' => 'Admins can only view bills created by normal users.'])->setStatusCode(403);
     }
 
     /**

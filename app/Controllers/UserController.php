@@ -48,7 +48,7 @@ class UserController extends BaseController
     public function store()
     {
         if (session()->get('user_role') !== 'admin') {
-            return redirect()->to('/')->with('error', 'Unauthorized access');
+            return $this->response->setJSON(['success' => false, 'message' => 'Unauthorized access'])->setStatusCode(403);
         }
 
         $rules = [
@@ -65,7 +65,7 @@ class UserController extends BaseController
         ];
 
         if (!$this->validate($rules, $messages)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            return $this->response->setJSON(['success' => false, 'message' => 'Validation failed', 'errors' => $this->validator->getErrors()]);
         }
 
         $this->userModel->insert([
@@ -82,7 +82,7 @@ class UserController extends BaseController
             'Created user: ' . $this->request->getPost('name')
         );
 
-        return redirect()->to('/users')->with('success', 'User created successfully');
+        return $this->response->setJSON(['success' => true, 'message' => 'User created successfully', 'redirect' => '/users']);
     }
 
     /**
@@ -133,65 +133,65 @@ class UserController extends BaseController
     public function update($id = null)
     {
         if (session()->get('user_role') !== 'admin') {
-            return redirect()->to('/')->with('error', 'Unauthorized access');
+            return $this->response->setJSON(['success' => false, 'message' => 'Unauthorized access'])->setStatusCode(403);
         }
 
-    if (!$id) {
-        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        if (!$id) {
+            return $this->response->setJSON(['success' => false, 'message' => 'User not found'])->setStatusCode(404);
+        }
+
+        $user = $this->userModel->find($id);
+        if (!$user) {
+            return $this->response->setJSON(['success' => false, 'message' => 'User not found'])->setStatusCode(404);
+        }
+
+        $rules = [
+            'name'  => 'required|string|max_length[100]',
+            'email' => 'required|valid_email|is_unique[users.email,id,' . $id . ']',
+            'role'  => 'required|in_list[admin,normal]',
+        ];
+
+        $password = $this->request->getPost('password');
+
+        if ($password !== null && $password !== '') {
+            $rules['password'] = 'permit_empty|strongPassword';
+        }
+
+        $messages = [
+            'password' => [
+                'strongPassword' => 'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.',
+            ],
+        ];
+
+        if (!$this->validate($rules, $messages)) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Validation failed', 'errors' => $this->validator->getErrors()]);
+        }
+
+        $updateData = [
+            'id'    => $id,
+            'name'  => $this->request->getPost('name'),
+            'email' => $this->request->getPost('email'),
+            'role'  => $this->request->getPost('role'),
+        ];
+
+        if ($password !== null && $password !== '') {
+            $updateData['password'] = $password;
+        }
+
+        $updated = $this->userModel->update($id, $updateData);
+
+        if (! $updated) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Database error', 'errors' => $this->userModel->errors()]);
+        }
+
+        $this->auditLogModel->logAction(
+            session()->get('user_id'),
+            'USER_UPDATED',
+            'Updated user: ' . $this->request->getPost('name')
+        );
+
+        return $this->response->setJSON(['success' => true, 'message' => 'User updated successfully', 'redirect' => '/users']);
     }
-
-    $user = $this->userModel->find($id);
-    if (!$user) {
-        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
-    }
-
-    $rules = [
-        'name'  => 'required|string|max_length[100]',
-        'email' => 'required|valid_email|is_unique[users.email,id,' . $id . ']',
-        'role'  => 'required|in_list[admin,normal]',
-    ];
-
-    $password = $this->request->getPost('password');
-
-    if ($password !== null && $password !== '') {
-        $rules['password'] = 'permit_empty|strongPassword';
-    }
-
-    $messages = [
-        'password' => [
-            'strongPassword' => 'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.',
-        ],
-    ];
-
-    if (!$this->validate($rules, $messages)) {
-        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-    }
-
-    $updateData = [
-        'id'    => $id,
-        'name'  => $this->request->getPost('name'),
-        'email' => $this->request->getPost('email'),
-        'role'  => $this->request->getPost('role'),
-    ];
-
-    if ($password !== null && $password !== '') {
-        $updateData['password'] = $password;
-    }
-
-    $updated = $this->userModel->update($id, $updateData);
-
-    if (! $updated) {
-        return redirect()->back()->withInput()->with('errors', $this->userModel->errors());
-    }
-
-    $this->auditLogModel->logAction(
-        session()->get('user_id'),
-        'USER_UPDATED',
-        'Updated user: ' . $this->request->getPost('name')
-    );
-
-    return redirect()->to('/users')->with('success', 'User updated successfully');
-}
 
     /**
      * Admin: Delete user
@@ -199,21 +199,21 @@ class UserController extends BaseController
     public function delete($id = null)
     {
         if (session()->get('user_role') !== 'admin') {
-            return redirect()->to('/')->with('error', 'Unauthorized access');
+            return $this->response->setJSON(['success' => false, 'message' => 'Unauthorized access'])->setStatusCode(403);
         }
 
         if (!$id) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            return $this->response->setJSON(['success' => false, 'message' => 'User not found'])->setStatusCode(404);
         }
 
         $user = $this->userModel->find($id);
         if (!$user) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            return $this->response->setJSON(['success' => false, 'message' => 'User not found'])->setStatusCode(404);
         }
 
         // Don't allow deleting self
         if ($id == session()->get('user_id')) {
-            return redirect()->back()->with('error', 'Cannot delete your own account');
+            return $this->response->setJSON(['success' => false, 'message' => 'Cannot delete your own account'])->setStatusCode(400);
         }
 
         $this->userModel->delete($id);
@@ -225,6 +225,6 @@ class UserController extends BaseController
             'Deleted user: ' . $user['name']
         );
 
-        return redirect()->to('/users')->with('success', 'User deleted successfully');
+        return $this->response->setJSON(['success' => true, 'message' => 'User deleted successfully', 'redirect' => '/users']);
     }
 }

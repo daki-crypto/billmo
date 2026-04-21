@@ -55,7 +55,7 @@ class ComputeBillController extends BaseController
     public function store()
     {
         if (session()->get('user_role') !== 'normal') {
-            return redirect()->to('/')->with('error', 'Unauthorized access');
+            return $this->response->setJSON(['success' => false, 'message' => 'Unauthorized access'])->setStatusCode(403);
         }
 
         $rules = [
@@ -65,7 +65,7 @@ class ComputeBillController extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            return $this->response->setJSON(['success' => false, 'message' => 'Validation failed', 'errors' => $this->validator->getErrors()]);
         }
 
         $units = (float) $this->request->getPost('units_consumed');
@@ -88,7 +88,7 @@ class ComputeBillController extends BaseController
             'Computed bill for client ID: ' . $this->request->getPost('client_id')
         );
 
-        return redirect()->to('/billing/history')->with('success', 'Bill computed successfully!');
+        return $this->response->setJSON(['success' => true, 'message' => 'Bill computed successfully!', 'redirect' => '/billing/history']);
     }
 
     /**
