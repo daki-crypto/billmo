@@ -5,9 +5,8 @@
 
 <?= $this->section('content') ?>
 <div>
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h1 style="color: #2c3e50;">Clients Management</h1>
-        <a href="<?= base_url('clients/create') ?>" class="btn btn-success">+ Create New Client</a>
+    <div class="page-header-row">
+        <h1 class="page-title-no-margin">Clients Management</h1>
     </div>
 
     <?php if (!empty($clients)): ?>
@@ -26,14 +25,14 @@
                 <?php foreach ($clients as $client): ?>
                     <tr>
                         <td><?= format_six_digit_id($client['id']) ?></td>
-                        <td style="font-weight: 600;"><?= $client['name'] ?></td>
+                        <td class="field-value"><?= $client['name'] ?></td>
                         <td><span class="badge badge-info"><?= $client['meter_number'] ?></span></td>
                         <td><?= strlen($client['address']) > 40 ? substr($client['address'], 0, 40) . '...' : $client['address'] ?></td>
                         <td><?= date('M d, Y', strtotime($client['created_at'])) ?></td>
                         <td>
                             <a href="<?= base_url('clients/' . $client['id']) ?>" class="btn btn-primary btn-sm">View</a>
                             <a href="<?= base_url('clients/' . $client['id'] . '/edit') ?>" class="btn btn-primary btn-sm">Edit</a>
-                            <form method="POST" action="<?= base_url('clients/' . $client['id'] . '/delete') ?>" style="display:inline;">
+                            <form method="POST" action="<?= base_url('clients/' . $client['id'] . '/delete') ?>" class="inline-form">
                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
                             </form>
                         </td>
@@ -42,9 +41,9 @@
             </tbody>
         </table>
     <?php else: ?>
-        <div style="background: white; padding: 40px; text-align: center; border-radius: 4px;">
-            <p style="color: #666; font-size: 16px;">No clients found.</p>
-            <a href="<?= base_url('clients/create') ?>" class="btn btn-success" style="margin-top: 15px;">Create First Client</a>
+        <div class="empty-state-card">
+            <p class="empty-state-text">No clients found.</p>
+            <a href="<?= base_url('clients/create') ?>" class="btn btn-success top-gap-15">Create First Client</a>
         </div>
     <?php endif; ?>
 </div>

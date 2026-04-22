@@ -4,18 +4,18 @@
 <?= $this->extend('layout') ?>
 
 <?= $this->section('content') ?>
-<div style="max-width: 900px; margin: 0 auto;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 20px; flex-wrap: wrap;">
+<div class="page-container-lg">
+    <div class="profile-top">
         <div>
-            <h1 style="color: #2c3e50; margin-bottom: 6px;">My Profile</h1>
-            <p style="color: #666;">View your account details, update your basic information, and manage your password.</p>
+            <h1 class="page-title">My Profile</h1>
+            <p class="page-subtitle">View your account details, update your basic information, and manage your password.</p>
         </div>
-        <div style="background: white; border-radius: 8px; padding: 14px 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); min-width: 220px;">
-            <div style="font-size: 12px; color: #666; text-transform: uppercase; margin-bottom: 6px;">Account Snapshot</div>
-            <div style="font-size: 16px; font-weight: 700; color: #2c3e50;"><?= esc($user['name']) ?></div>
-            <div style="font-size: 14px; color: #666;"><?= esc($user['email']) ?></div>
-            <div style="margin-top: 8px;">
-                <span class="badge" style="background-color: <?= $user['role'] === 'admin' ? '#dc3545' : '#28a745' ?>; color: white; padding: 4px 10px; border-radius: 999px;">
+        <div class="snapshot-card">
+            <div class="snapshot-label">Account Snapshot</div>
+            <div class="snapshot-name"><?= esc($user['name']) ?></div>
+            <div class="snapshot-email"><?= esc($user['email']) ?></div>
+            <div class="snapshot-role-wrap">
+                <span class="badge <?= $user['role'] === 'admin' ? 'badge-admin' : 'badge-normal' ?>">
                     <?= ucfirst($user['role']) ?>
                 </span>
             </div>
@@ -23,20 +23,20 @@
     </div>
 
     <?php if (session()->getFlashdata('temporary_password')): ?>
-        <div style="background: #fff3cd; color: #856404; padding: 16px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #ffc107;">
+        <div class="temp-password-box">
             <strong>Temporary Password:</strong> <?= esc(session()->getFlashdata('temporary_password')) ?>
-            <div style="margin-top: 6px; font-size: 13px;">Store this password now, then use Change Password to set one you prefer.</div>
+            <div class="temp-password-note">Store this password now, then use Change Password to set one you prefer.</div>
         </div>
     <?php endif; ?>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; align-items: start;">
-        <div class="form-container" style="max-width: none;">
-            <h2 style="color: #2c3e50; margin-bottom: 16px;">Basic Information</h2>
+    <div class="profile-grid">
+        <div class="form-container full-width-form">
+            <h2 class="section-title">Basic Information</h2>
 
             <?php if (session()->has('profile_errors')): ?>
-                <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #f5c6cb;">
+                <div class="error-box">
                     <strong>Please fix the following profile errors:</strong>
-                    <ul style="margin-top: 10px; margin-left: 20px;">
+                    <ul class="error-list">
                         <?php foreach (session('profile_errors') as $error): ?>
                             <li><?= esc($error) ?></li>
                         <?php endforeach; ?>
@@ -73,14 +73,14 @@
             </form>
         </div>
 
-        <div style="display: grid; gap: 20px;">
-            <div class="form-container" style="max-width: none;">
-                <h2 style="color: #2c3e50; margin-bottom: 16px;">Change Password</h2>
+        <div class="profile-side-stack">
+            <div class="form-container full-width-form">
+                <h2 class="section-title">Change Password</h2>
 
                 <?php if (session()->has('password_errors')): ?>
-                    <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #f5c6cb;">
+                    <div class="error-box">
                         <strong>Please fix the following password errors:</strong>
-                        <ul style="margin-top: 10px; margin-left: 20px;">
+                        <ul class="error-list">
                             <?php foreach (session('password_errors') as $error): ?>
                                 <li><?= esc($error) ?></li>
                             <?php endforeach; ?>
@@ -99,7 +99,7 @@
                     <div class="form-group">
                         <label for="new_password">New Password</label>
                         <input type="password" id="new_password" name="new_password" required autocomplete="off">
-                        <small style="display: block; margin-top: 6px; color: #666;">Use at least 8 characters with uppercase, lowercase, number, and special character.</small>
+                        <small class="form-note">Use at least 8 characters with uppercase, lowercase, number, and special character.</small>
                     </div>
 
                     <div class="form-group">
@@ -113,9 +113,9 @@
                 </form>
             </div>
 
-            <div class="form-container" style="max-width: none;">
-                <h2 style="color: #2c3e50; margin-bottom: 12px;">Reset Password</h2>
-                <p style="color: #666; line-height: 1.6; margin-bottom: 16px;">Resetting generates a one-time temporary password for your account. Use it to log in, then change your password immediately.</p>
+            <div class="form-container full-width-form">
+                <h2 class="section-title-small-gap">Reset Password</h2>
+                <p class="help-text">Resetting generates a one-time temporary password for your account. Use it to log in, then change your password immediately.</p>
 
                 <form method="POST" action="<?= base_url('profile/reset-password') ?>" onsubmit="return confirm('Generate a temporary password for this account?');">
                     <?= csrf_field() ?>

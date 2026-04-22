@@ -5,8 +5,8 @@
 
 <?= $this->section('content') ?>
 <div>
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h1 style="color: #2c3e50;">User Management</h1>
+    <div class="page-header-row">
+        <h1 class="page-title-no-margin">User Management</h1>
         <a href="<?= base_url('users/create') ?>" class="btn btn-success">+ Create New User</a>
     </div>
 
@@ -26,10 +26,10 @@
                 <?php foreach ($users as $user): ?>
                     <tr>
                         <td><?= format_user_id($user['id']) ?></td>
-                        <td style="font-weight: 600;"><?= $user['name'] ?></td>
+                        <td class="field-value"><?= $user['name'] ?></td>
                         <td><?= $user['email'] ?></td>
                         <td>
-                            <span class="badge" style="background-color: <?= $user['role'] === 'admin' ? '#dc3545' : '#28a745' ?>; color: white; padding: 4px 8px; border-radius: 4px; display: inline-block;">
+                            <span class="badge <?= $user['role'] === 'admin' ? 'badge-admin' : 'badge-normal' ?>">
                                 <?= ucfirst($user['role']) ?>
                             </span>
                         </td>
@@ -38,7 +38,7 @@
                             <a href="<?= base_url('users/' . $user['id']) ?>" class="btn btn-primary btn-sm">View</a>
                             <a href="<?= base_url('users/' . $user['id'] . '/edit') ?>" class="btn btn-primary btn-sm">Edit</a>
                             <?php if ($user['id'] !== session('user_id')): ?>
-                                <form method="POST" action="<?= base_url('users/' . $user['id'] . '/delete') ?>" style="display:inline;">
+                                <form method="POST" action="<?= base_url('users/' . $user['id'] . '/delete') ?>" class="inline-form">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
                                 </form>
@@ -49,9 +49,9 @@
             </tbody>
         </table>
     <?php else: ?>
-        <div style="background: white; padding: 40px; text-align: center; border-radius: 4px;">
-            <p style="color: #666; font-size: 16px;">No users found.</p>
-            <a href="<?= base_url('users/create') ?>" class="btn btn-success" style="margin-top: 15px;">Create First User</a>
+        <div class="empty-state-card">
+            <p class="empty-state-text">No users found.</p>
+            <a href="<?= base_url('users/create') ?>" class="btn btn-success top-gap-15">Create First User</a>
         </div>
     <?php endif; ?>
 </div>

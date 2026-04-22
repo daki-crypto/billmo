@@ -5,8 +5,8 @@
 
 <?= $this->section('content') ?>
 <div>
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h1 style="color: #2c3e50;">Bills Management</h1>
+    <div class="page-header-row">
+        <h1 class="page-title-no-margin">Bills Management</h1>
     </div>
 
     <?php if (!empty($bills)): ?>
@@ -33,7 +33,7 @@
                         <td><?= date('M Y', strtotime($bill['billing_month'])) ?></td>
                         <td><?= number_format($bill['units_consumed'], 2) ?></td>
                         <td>₱<?= number_format($bill['rate_per_unit'], 2) ?></td>
-                        <td style="font-weight: bold; color: #007bff;">₱<?= number_format($bill['total_amount'], 2) ?></td>
+                        <td class="amount-cell">₱<?= number_format($bill['total_amount'], 2) ?></td>
                         <td><?= $bill['user_name'] ?></td>
                         <td>
                             <a href="<?= base_url('bills/' . $bill['id']) ?>" class="btn btn-primary btn-sm">View</a>
@@ -43,8 +43,8 @@
             </tbody>
         </table>
     <?php else: ?>
-        <div style="background: white; padding: 40px; text-align: center; border-radius: 4px;">
-            <p style="color: #666; font-size: 16px;">No bills from normal users found.</p>
+        <div class="empty-state-card">
+            <p class="empty-state-text">No bills found.</p>
         </div>
     <?php endif; ?>
 </div>

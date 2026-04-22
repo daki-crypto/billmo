@@ -104,7 +104,7 @@ class ClientController extends BaseController
             return $this->response->setJSON(['success' => false, 'message' => 'Database error', 'errors' => $this->clientModel->errors()]);
         }
 
-        return $this->response->setJSON(['success' => true, 'message' => 'Client created successfully!', 'redirect' => '/clients']);
+        return $this->response->setJSON(['success' => true, 'message' => 'Client created successfully!', 'redirect' => base_url('clients')]);
     }
 
     /**
@@ -175,7 +175,7 @@ class ClientController extends BaseController
             return $this->response->setJSON(['success' => false, 'message' => 'Database error', 'errors' => $this->clientModel->errors()]);
         }
 
-        return $this->response->setJSON(['success' => true, 'message' => 'Client updated successfully!', 'redirect' => '/clients']);
+        return $this->response->setJSON(['success' => true, 'message' => 'Client updated successfully!', 'redirect' => base_url('clients')]);
     }
 
     /**
@@ -201,6 +201,6 @@ class ClientController extends BaseController
         }
 
         $this->clientModel->delete($id);
-        return $this->response->setJSON(['success' => true, 'message' => 'Client deleted successfully!', 'redirect' => '/clients']);
+        return $this->response->setJSON(['success' => true, 'message' => 'Client deleted successfully!', 'redirect' => base_url('clients')]);
     }
 }

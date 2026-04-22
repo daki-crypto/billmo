@@ -4,13 +4,13 @@
 <?= $this->extend('layout') ?>
 
 <?= $this->section('content') ?>
-<div style="max-width: 600px; margin: 0 auto;">
-    <h1 style="color: #2c3e50; margin-bottom: 20px;">Edit Bill #<?= $bill['id'] ?></h1>
+<div class="page-container-sm">
+    <h1 class="page-title">Edit Bill #<?= $bill['id'] ?></h1>
 
     <?php if (session()->has('errors')): ?>
-        <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #f5c6cb;">
+        <div class="error-box">
             <strong>Please fix the following errors:</strong>
-            <ul style="margin-top: 10px; margin-left: 20px;">
+            <ul class="error-list">
                 <?php foreach (session('errors') as $error): ?>
                     <li><?= $error ?></li>
                 <?php endforeach; ?>
@@ -23,7 +23,7 @@
             <?= csrf_field() ?>
 
             <div class="form-group">
-                <label for="client_id">Client <span style="color: red;">*</span></label>
+                <label for="client_id">Client <span class="required-mark">*</span></label>
                 <select id="client_id" name="client_id" required>
                     <option value="">-- Select Client --</option>
                     <?php foreach ($clients as $client): ?>
@@ -35,7 +35,7 @@
             </div>
 
             <div class="form-group">
-                <label for="user_id">Created By <span style="color: red;">*</span></label>
+                <label for="user_id">Created By <span class="required-mark">*</span></label>
                 <select id="user_id" name="user_id" required>
                     <option value="">-- Select User --</option>
                     <?php foreach ($users as $user): ?>
@@ -47,22 +47,22 @@
             </div>
 
             <div class="form-group">
-                <label for="billing_month">Billing Month <span style="color: red;">*</span></label>
+                <label for="billing_month">Billing Month <span class="required-mark">*</span></label>
                 <input type="date" id="billing_month" name="billing_month" value="<?= old('billing_month', $bill['billing_month']) ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="units_consumed">Units Consumed <span style="color: red;">*</span></label>
+                <label for="units_consumed">Units Consumed <span class="required-mark">*</span></label>
                 <input type="number" id="units_consumed" name="units_consumed" step="0.01" value="<?= old('units_consumed', $bill['units_consumed']) ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="rate_per_unit">Rate Per Unit (₱) <span style="color: red;">*</span></label>
+                <label for="rate_per_unit">Rate Per Unit (₱) <span class="required-mark">*</span></label>
                 <input type="number" id="rate_per_unit" name="rate_per_unit" step="0.01" value="<?= old('rate_per_unit', $bill['rate_per_unit']) ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="total_amount">Total Amount (₱) <span style="color: red;">*</span></label>
+                <label for="total_amount">Total Amount (₱) <span class="required-mark">*</span></label>
                 <input type="number" id="total_amount" name="total_amount" step="0.01" value="<?= old('total_amount', $bill['total_amount']) ?>" required>
             </div>
 

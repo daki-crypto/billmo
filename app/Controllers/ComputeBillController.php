@@ -45,8 +45,7 @@ class ComputeBillController extends BaseController
             return redirect()->to('/')->with('error', 'Only normal users can compute bills');
         }
 
-        $clients = $this->clientModel->findAll();
-        return view('bills/compute', ['clients' => $clients]);
+        return view('bills/compute');
     }
 
     /**
@@ -59,7 +58,9 @@ class ComputeBillController extends BaseController
         }
 
         $rules = [
-            'client_id'      => 'required|integer',
+            'client_name'    => 'required|max_length[100]',
+            'meter_number'   => 'required|max_length[100]',
+            'client_address' => 'required',
             'billing_month'  => 'required|valid_date',
             'units_consumed' => 'required|decimal',
         ];
@@ -68,12 +69,43 @@ class ComputeBillController extends BaseController
             return $this->response->setJSON(['success' => false, 'message' => 'Validation failed', 'errors' => $this->validator->getErrors()]);
         }
 
+        $clientName   = trim((string) $this->request->getPost('client_name'));
+        $meterNumber  = trim((string) $this->request->getPost('meter_number'));
+        $clientAddress = trim((string) $this->request->getPost('client_address'));
+
+        // Look up client by meter number first
+        $client = $this->clientModel->where('meter_number', $meterNumber)->first();
+
+        if (! $client) {
+            // Auto-create the client if meter number is new
+            $clientId = $this->clientModel->insert([
+                'name'         => $clientName,
+                'meter_number' => $meterNumber,
+                'address'      => $clientAddress,
+            ]);
+
+            if (! $clientId) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Failed to register the client. Please try again.',
+                ]);
+            }
+
+            $client = $this->clientModel->find($clientId);
+
+            $this->auditLogModel->logAction(
+                session()->get('user_id'),
+                'CLIENT_CREATED',
+                'Auto-registered client: ' . $clientName . ' (Meter: ' . $meterNumber . ')'
+            );
+        }
+
         $units = (float) $this->request->getPost('units_consumed');
         $rate = $this->resolveTierRate($units);
         $total = $units * $rate;
 
         $this->billModel->insert([
-            'client_id'      => $this->request->getPost('client_id'),
+            'client_id'      => $client['id'],
             'user_id'        => session()->get('user_id'),
             'billing_month'  => $this->request->getPost('billing_month'),
             'units_consumed' => $units,
@@ -85,10 +117,10 @@ class ComputeBillController extends BaseController
         $this->auditLogModel->logAction(
             session()->get('user_id'),
             'BILL_COMPUTED',
-            'Computed bill for client ID: ' . $this->request->getPost('client_id')
+            'Computed bill for client ID: ' . $client['id']
         );
 
-        return $this->response->setJSON(['success' => true, 'message' => 'Bill computed successfully!', 'redirect' => '/billing/history']);
+        return $this->response->setJSON(['success' => true, 'message' => 'Bill computed successfully!', 'redirect' => base_url('billing/history')]);
     }
 
     /**

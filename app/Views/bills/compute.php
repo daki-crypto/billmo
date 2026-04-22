@@ -4,13 +4,13 @@
 <?= $this->extend('layout') ?>
 
 <?= $this->section('content') ?>
-<div style="max-width: 600px; margin: 0 auto;">
-    <h1 style="color: #2c3e50; margin-bottom: 20px;">Compute Electric Bill</h1>
+<div class="page-container-sm">
+    <h1 class="page-title">Compute Electric Bill</h1>
 
     <?php if (session()->has('errors')): ?>
-        <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #f5c6cb;">
+        <div class="error-box">
             <strong>Please fix the following errors:</strong>
-            <ul style="margin-top: 10px; margin-left: 20px;">
+            <ul class="error-list">
                 <?php foreach (session('errors') as $error): ?>
                     <li><?= $error ?></li>
                 <?php endforeach; ?>
@@ -23,24 +23,27 @@
             <?= csrf_field() ?>
 
             <div class="form-group">
-                <label for="client_id">Select Client <span style="color: red;">*</span></label>
-                <select id="client_id" name="client_id" required>
-                    <option value="">-- Select Client --</option>
-                    <?php foreach ($clients as $client): ?>
-                        <option value="<?= $client['id'] ?>" <?= old('client_id') == $client['id'] ? 'selected' : '' ?>>
-                            <?= $client['name'] ?> (<?= $client['meter_number'] ?>)
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+                <label for="client_name">Client Name <span class="required-mark">*</span></label>
+                <input type="text" id="client_name" name="client_name" value="<?= old('client_name') ?>" placeholder="Enter client name" required>
+            </div>
+
+            <div class="form-group form-group-meter">
+                <label for="meter_number">Meter Number <span class="required-mark">*</span></label>
+                <input type="text" id="meter_number" name="meter_number" value="<?= old('meter_number') ?>" placeholder="e.g. MTR-0001" required>
             </div>
 
             <div class="form-group">
-                <label for="billing_month">Billing Month <span style="color: red;">*</span></label>
+                <label for="client_address">Client Address <span class="required-mark">*</span></label>
+                <input type="text" id="client_address" name="client_address" value="<?= old('client_address') ?>" placeholder="Enter client address" required>
+            </div>
+
+            <div class="form-group">
+                <label for="billing_month">Billing Month <span class="required-mark">*</span></label>
                 <input type="date" id="billing_month" name="billing_month" value="<?= old('billing_month') ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="units_consumed">Units Consumed (kWh) <span style="color: red;">*</span></label>
+                <label for="units_consumed">Units Consumed (kWh) <span class="required-mark">*</span></label>
                 <input type="number" id="units_consumed" name="units_consumed" step="0.01" value="<?= old('units_consumed') ?>" placeholder="0.00" required>
             </div>
 
@@ -49,9 +52,9 @@
                 <input type="number" id="rate_per_unit" name="rate_per_unit" step="0.01" value="0.00" readonly>
             </div>
 
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #17a2b8;">
-                <label style="color: #2c3e50; font-size: 12px; text-transform: uppercase; display: block; margin-bottom: 8px;">Tiered Billing Rates</label>
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 8px; color: #495057; font-size: 14px;">
+            <div class="info-block info-block-rates">
+                <label class="info-label">Tiered Billing Rates</label>
+                <div class="rates-grid">
                     <strong>Consumption Range</strong>
                     <strong>Rate</strong>
                     <span>1 - 200 kWh</span>
@@ -63,14 +66,13 @@
                 </div>
             </div>
 
-            <div style="background: #f0f8ff; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #007bff;">
-                <label style="color: #0c5460; font-size: 12px; text-transform: uppercase; display: block; margin-bottom: 8px;">Calculated Total Amount</label>
-                <p style="font-size: 24px; font-weight: bold; color: #007bff;">₱<span id="totalAmount">0.00</span></p>
+            <div class="info-block info-block-total">
+                <label class="info-label info-label-accent">Calculated Total Amount</label>
+                <p class="total-amount-text">₱<span id="totalAmount">0.00</span></p>
             </div>
 
             <div class="form-buttons">
                 <button type="submit" class="btn btn-success">Compute & Save Bill</button>
-                <a href="<?= base_url('billing/history') ?>" class="btn btn-secondary">View History</a>
             </div>
         </form>
     </div>

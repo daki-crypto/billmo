@@ -72,7 +72,7 @@ class Home extends BaseController
             $monthKey = date('Y-m', strtotime('-' . $offset . ' months'));
             $series[$monthKey] = [
                 'label' => date('M', strtotime($monthKey . '-01')),
-                'amount' => 0.0,
+                'count' => 0,
             ];
         }
 
@@ -83,19 +83,19 @@ class Home extends BaseController
 
             $monthKey = date('Y-m', strtotime($bill['billing_month']));
             if (isset($series[$monthKey])) {
-                $series[$monthKey]['amount'] += (float) ($bill['total_amount'] ?? 0);
+                $series[$monthKey]['count']++;
             }
         }
 
-        $maxAmount = 0.0;
+        $maxCount = 0;
         foreach ($series as $item) {
-            if ($item['amount'] > $maxAmount) {
-                $maxAmount = $item['amount'];
+            if ($item['count'] > $maxCount) {
+                $maxCount = $item['count'];
             }
         }
 
         foreach ($series as &$item) {
-            $item['height'] = $maxAmount > 0 ? max(18, (int) round(($item['amount'] / $maxAmount) * 100)) : 18;
+            $item['height'] = $maxCount > 0 ? max(18, (int) round(($item['count'] / $maxCount) * 100)) : 18;
         }
         unset($item);
 

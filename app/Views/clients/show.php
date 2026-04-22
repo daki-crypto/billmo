@@ -4,44 +4,44 @@
 <?= $this->extend('layout') ?>
 
 <?= $this->section('content') ?>
-<div style="max-width: 1000px; margin: 0 auto;">
-    <div style="margin-bottom: 20px;">
-        <a href="<?= base_url('clients') ?>" style="color: #007bff; text-decoration: none;">← Back to Clients</a>
+<div class="page-container-xl">
+    <div class="spacer-bottom-20">
+        <a href="<?= base_url('clients') ?>" class="back-link">← Back to Clients</a>
     </div>
 
-    <div style="background: white; padding: 30px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-        <h1 style="color: #2c3e50; margin-bottom: 20px;"><?= $client['name'] ?></h1>
+    <div class="info-panel spacer-bottom-20">
+        <h1 class="page-title"><?= $client['name'] ?></h1>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+        <div class="field-grid-two">
             <div>
-                <label style="color: #666; font-size: 12px; text-transform: uppercase;">Client ID</label>
-                <p style="font-size: 16px; font-weight: bold;"><?= format_six_digit_id($client['id']) ?></p>
+                <label class="field-label-muted">Client ID</label>
+                <p class="field-value"><?= format_six_digit_id($client['id']) ?></p>
             </div>
             <div>
-                <label style="color: #666; font-size: 12px; text-transform: uppercase;">Meter Number</label>
-                <p style="font-size: 16px; font-weight: bold;"><?= $client['meter_number'] ?></p>
+                <label class="field-label-muted">Meter Number</label>
+                <p class="field-value"><?= $client['meter_number'] ?></p>
             </div>
             <div>
-                <label style="color: #666; font-size: 12px; text-transform: uppercase;">Created At</label>
-                <p style="font-size: 16px; font-weight: bold;"><?= date('M d, Y', strtotime($client['created_at'])) ?></p>
+                <label class="field-label-muted">Created At</label>
+                <p class="field-value"><?= date('M d, Y', strtotime($client['created_at'])) ?></p>
             </div>
         </div>
 
-        <div style="margin-bottom: 20px;">
-            <label style="color: #666; font-size: 12px; text-transform: uppercase;">Address</label>
-            <p style="font-size: 16px; line-height: 1.6;"><?= nl2br($client['address']) ?></p>
+        <div class="spacer-bottom-20">
+            <label class="field-label-muted">Address</label>
+            <p class="field-value"><?= nl2br($client['address']) ?></p>
         </div>
 
         <div>
             <a href="<?= base_url('clients/' . $client['id'] . '/edit') ?>" class="btn btn-primary">Edit Client</a>
-            <form method="POST" action="<?= base_url('clients/' . $client['id'] . '/delete') ?>" style="display:inline;">
+            <form method="POST" action="<?= base_url('clients/' . $client['id'] . '/delete') ?>" class="inline-form">
                 <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete Client</button>
             </form>
         </div>
     </div>
 
-    <div style="background: white; padding: 30px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-        <h2 style="color: #2c3e50; margin-bottom: 20px;">Bills for <?= $client['name'] ?></h2>
+    <div class="info-panel">
+        <h2 class="page-title">Bills for <?= $client['name'] ?></h2>
 
         <?php if (!empty($client['bills'])): ?>
             <table>
@@ -62,7 +62,7 @@
                             <td><?= date('M Y', strtotime($bill['billing_month'])) ?></td>
                             <td><?= number_format($bill['units_consumed'], 2) ?></td>
                             <td>₱<?= number_format($bill['rate_per_unit'], 2) ?></td>
-                            <td style="font-weight: bold; color: #007bff;">₱<?= number_format($bill['total_amount'], 2) ?></td>
+                            <td class="amount-cell">₱<?= number_format($bill['total_amount'], 2) ?></td>
                             <td>
                                 <a href="<?= base_url('bills/' . $bill['id']) ?>" class="btn btn-primary btn-sm">View</a>
                                 <a href="<?= base_url('bills/' . $bill['id'] . '/edit') ?>" class="btn btn-primary btn-sm">Edit</a>
@@ -72,7 +72,7 @@
                 </tbody>
             </table>
         <?php else: ?>
-            <p style="color: #666; text-align: center; padding: 20px;">No bills found for this client.</p>
+            <p class="empty-state-text">No bills found for this client.</p>
         <?php endif; ?>
     </div>
 </div>

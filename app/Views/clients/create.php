@@ -4,13 +4,13 @@
 <?= $this->extend('layout') ?>
 
 <?= $this->section('content') ?>
-<div style="max-width: 600px; margin: 0 auto;">
-    <h1 style="color: #2c3e50; margin-bottom: 20px;">Create New Client</h1>
+<div class="page-container-sm">
+    <h1 class="page-title">Create New Client</h1>
 
     <?php if (session()->has('errors')): ?>
-        <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #f5c6cb;">
+        <div class="error-box">
             <strong>Please fix the following errors:</strong>
-            <ul style="margin-top: 10px; margin-left: 20px;">
+            <ul class="error-list">
                 <?php foreach (session('errors') as $error): ?>
                     <li><?= $error ?></li>
                 <?php endforeach; ?>
@@ -23,17 +23,17 @@
             <?= csrf_field() ?>
 
             <div class="form-group">
-                <label for="name">Client Name <span style="color: red;">*</span></label>
+                <label for="name">Client Name <span class="required-mark">*</span></label>
                 <input type="text" id="name" name="name" value="<?= old('name') ?>" placeholder="Enter client name" required>
             </div>
 
             <div class="form-group">
-                <label for="address">Address <span style="color: red;">*</span></label>
+                <label for="address">Address <span class="required-mark">*</span></label>
                 <textarea id="address" name="address" placeholder="Enter client address" required><?= old('address') ?></textarea>
             </div>
 
             <div class="form-group">
-                <label for="meter_number">Meter Number <span style="color: red;">*</span></label>
+                <label for="meter_number">Meter Number <span class="required-mark">*</span></label>
                 <input type="text" id="meter_number" name="meter_number" value="<?= old('meter_number') ?>" placeholder="Enter unique meter number" required>
             </div>
 

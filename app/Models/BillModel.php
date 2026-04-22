@@ -92,6 +92,18 @@ class BillModel extends Model
     }
 
     /**
+     * Get any bill by ID with client and user details.
+     */
+    public function getBillWithDetailsById($id)
+    {
+        return $this->select('bills.*, clients.name as client_name, clients.meter_number, users.name as user_name, users.role as user_role')
+                    ->join('clients', 'clients.id = bills.client_id', 'left')
+                    ->join('users', 'users.id = bills.user_id', 'left')
+                    ->where('bills.id', $id)
+                    ->first();
+    }
+
+    /**
      * Get bills created by normal users with client and user info.
      */
     public function getBillsCreatedByNormalUsers()

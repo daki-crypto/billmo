@@ -32,7 +32,7 @@ class BillController extends BaseController
             return redirect()->to('/billing/history');
         }
 
-        $bills = $this->billModel->getBillsCreatedByNormalUsers();
+        $bills = $this->billModel->getAllBillsWithDetails();
         return view('bills/index', ['bills' => $bills]);
     }
 
@@ -53,7 +53,7 @@ class BillController extends BaseController
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
-        $bill = $this->billModel->getNormalUserBillById($id);
+        $bill = $this->billModel->getBillWithDetailsById($id);
         if (!$bill) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }

@@ -82,7 +82,7 @@ class UserController extends BaseController
             'Created user: ' . $this->request->getPost('name')
         );
 
-        return $this->response->setJSON(['success' => true, 'message' => 'User created successfully', 'redirect' => '/users']);
+        return $this->response->setJSON(['success' => true, 'message' => 'User created successfully', 'redirect' => base_url('users')]);
     }
 
     /**
@@ -190,7 +190,7 @@ class UserController extends BaseController
             'Updated user: ' . $this->request->getPost('name')
         );
 
-        return $this->response->setJSON(['success' => true, 'message' => 'User updated successfully', 'redirect' => '/users']);
+        return $this->response->setJSON(['success' => true, 'message' => 'User updated successfully', 'redirect' => base_url('users')]);
     }
 
     /**
@@ -225,6 +225,6 @@ class UserController extends BaseController
             'Deleted user: ' . $user['name']
         );
 
-        return $this->response->setJSON(['success' => true, 'message' => 'User deleted successfully', 'redirect' => '/users']);
+        return $this->response->setJSON(['success' => true, 'message' => 'User deleted successfully', 'redirect' => base_url('users')]);
     }
 }

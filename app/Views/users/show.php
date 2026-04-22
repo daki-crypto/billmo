@@ -4,43 +4,44 @@
 <?= $this->extend('layout') ?>
 
 <?= $this->section('content') ?>
-<div style="max-width: 800px; margin: 0 auto;">
-    <div style="margin-bottom: 20px;">
-        <a href="<?= base_url('users') ?>" style="color: #007bff; text-decoration: none;">← Back to Users</a>
+<div class="page-container-md">
+    <div class="spacer-bottom-20">
+        <a href="<?= base_url('users') ?>" class="back-link">← Back to Users</a>
     </div>
 
-    <div style="background: white; padding: 30px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-        <h1 style="color: #2c3e50; margin-bottom: 30px;"><?= $user['name'] ?></h1>
+    <div class="info-panel">
+        <h1 class="heading-spaced"><?= $user['name'] ?></h1>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+        <div class="field-grid-two">
             <div>
-                <label style="color: #666; font-size: 12px; text-transform: uppercase;">User ID</label>
-                <p style="font-size: 16px; font-weight: bold;"><?= format_user_id($user['id']) ?></p>
+                <label class="field-label-muted">User ID</label>
+                <p class="field-value"><?= format_user_id($user['id']) ?></p>
             </div>
             <div>
-                <label style="color: #666; font-size: 12px; text-transform: uppercase;">Email</label>
-                <p style="font-size: 16px; font-weight: bold;"><?= $user['email'] ?></p>
+                <label class="field-label-muted">Email</label>
+                <p class="field-value"><?= $user['email'] ?></p>
             </div>
             <div>
-                <label style="color: #666; font-size: 12px; text-transform: uppercase;">Role</label>
+                <label class="field-label-muted">Role</label>
                 <p>
-                    <span class="badge" style="background-color: <?= $user['role'] === 'admin' ? '#dc3545' : '#28a745' ?>; color: white; padding: 6px 12px; border-radius: 4px; display: inline-block; font-weight: bold;">
+                    <span class="badge <?= $user['role'] === 'admin' ? 'badge-admin' : 'badge-normal' ?>">
                         <?= ucfirst($user['role']) ?>
                     </span>
                 </p>
             </div>
             <div>
-                <label style="color: #666; font-size: 12px; text-transform: uppercase;">Created At</label>
-                <p style="font-size: 16px; font-weight: bold;"><?= date('M d, Y H:i', strtotime($user['created_at'])) ?></p>
+                <label class="field-label-muted">Created At</label>
+                <p class="field-value"><?= date('M d, Y H:i', strtotime($user['created_at'])) ?></p>
             </div>
         </div>
 
-        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+        <hr class="hr-separator">
 
         <div>
             <a href="<?= base_url('users/' . $user['id'] . '/edit') ?>" class="btn btn-primary">Edit User</a>
             <?php if ($user['id'] !== session('user_id')): ?>
-                <form method="POST" action="<?= base_url('users/' . $user['id'] . '/delete') ?>" style="display:inline;"
+                <form method="POST" action="<?= base_url('users/' . $user['id'] . '/delete') ?>" class="inline-form">
+                    <?= csrf_field() ?>
                     <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete User</button>
                 </form>
             <?php endif; ?>

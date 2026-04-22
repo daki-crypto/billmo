@@ -5,7 +5,7 @@
 
 <?= $this->section('content') ?>
 <div>
-    <h1 style="color: #2c3e50; margin-bottom: 20px;">
+    <h1 class="page-title">
         <?= $userRole === 'admin' ? 'System Audit Logs' : 'My Action Logs' ?>
     </h1>
 
@@ -30,7 +30,7 @@
                             <td><?= format_user_id($log['user_id']) ?></td>
                         <?php endif; ?>
                         <td>
-                            <span class="badge badge-info" style="display: inline-block; padding: 6px 12px; border-radius: 4px; background-color: #17a2b8; color: white; font-size: 12px;">
+                            <span class="badge badge-action">
                                 <?= $log['action'] ?>
                             </span>
                         </td>
@@ -41,8 +41,8 @@
             </tbody>
         </table>
     <?php else: ?>
-        <div style="background: white; padding: 40px; text-align: center; border-radius: 4px;">
-            <p style="color: #666; font-size: 16px;">No audit logs found.</p>
+        <div class="empty-state-card">
+            <p class="empty-state-text">No audit logs found.</p>
         </div>
     <?php endif; ?>
 </div>
