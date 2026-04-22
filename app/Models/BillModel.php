@@ -11,12 +11,12 @@ class BillModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
-    protected $allowedFields = ['client_id', 'user_id', 'billing_month', 'units_consumed', 'rate_per_unit', 'total_amount'];
+    protected $allowedFields = ['name', 'user_id', 'billing_month', 'units_consumed', 'rate_per_unit', 'total_amount'];
     protected $useTimestamps = false;
 
     // Validation
     protected $validationRules = [
-        'client_id'      => 'required|integer',
+        'name'           => 'required|max_length[100]',
         'user_id'        => 'required|integer',
         'billing_month'  => 'required|valid_date',
         'units_consumed' => 'required|decimal',
@@ -32,6 +32,16 @@ class BillModel extends Model
     protected $allowCallbacks = true;
 
     /**
+     * Base query for bills with client and user details.
+     */
+    private function buildDetailedBillsQuery()
+    {
+        return $this->select('bills.*, bills.name as client_name, clients.meter_number, users.name as user_name, users.role as user_role')
+                    ->join('clients', 'clients.name = bills.name', 'left')
+                    ->join('users', 'users.id = bills.user_id', 'left');
+    }
+
+    /**
      * Get bill by ID
      */
     public function getBillById($id)
@@ -40,11 +50,11 @@ class BillModel extends Model
     }
 
     /**
-     * Get bills by client ID
+     * Get bills by client name
      */
-    public function getBillsByClient($clientId)
+    public function getBillsByClient($clientName)
     {
-        return $this->where('client_id', $clientId)->orderBy('billing_month', 'DESC')->findAll();
+        return $this->where('name', $clientName)->orderBy('billing_month', 'DESC')->findAll();
     }
 
     /**
@@ -60,8 +70,8 @@ class BillModel extends Model
      */
     public function getBillsByUserWithDetails($userId)
     {
-        return $this->select('bills.*, clients.name as client_name, clients.meter_number')
-                    ->join('clients', 'clients.id = bills.client_id', 'left')
+        return $this->select('bills.*, bills.name as client_name, clients.meter_number')
+                    ->join('clients', 'clients.name = bills.name', 'left')
                     ->where('bills.user_id', $userId)
                     ->orderBy('bills.billing_month', 'DESC')
                     ->findAll();
@@ -72,8 +82,8 @@ class BillModel extends Model
      */
     public function getBillSummaryForUser($billId, $userId)
     {
-        return $this->select('bills.*, clients.name as client_name, clients.meter_number, clients.address as client_address')
-                    ->join('clients', 'clients.id = bills.client_id', 'left')
+        return $this->select('bills.*, bills.name as client_name, clients.meter_number, clients.address as client_address')
+                    ->join('clients', 'clients.name = bills.name', 'left')
                     ->where('bills.id', $billId)
                     ->where('bills.user_id', $userId)
                     ->first();
@@ -84,8 +94,8 @@ class BillModel extends Model
      */
     public function getAllBillsWithDetails()
     {
-        return $this->select('bills.*, clients.name as client_name, clients.meter_number, users.name as user_name')
-                    ->join('clients', 'clients.id = bills.client_id', 'left')
+        return $this->select('bills.*, bills.name as client_name, clients.meter_number, users.name as user_name')
+                    ->join('clients', 'clients.name = bills.name', 'left')
                     ->join('users', 'users.id = bills.user_id', 'left')
                     ->orderBy('bills.created_at', 'DESC')
                     ->findAll();
@@ -96,9 +106,7 @@ class BillModel extends Model
      */
     public function getBillWithDetailsById($id)
     {
-        return $this->select('bills.*, clients.name as client_name, clients.meter_number, users.name as user_name, users.role as user_role')
-                    ->join('clients', 'clients.id = bills.client_id', 'left')
-                    ->join('users', 'users.id = bills.user_id', 'left')
+        return $this->buildDetailedBillsQuery()
                     ->where('bills.id', $id)
                     ->first();
     }
@@ -108,9 +116,7 @@ class BillModel extends Model
      */
     public function getBillsCreatedByNormalUsers()
     {
-        return $this->select('bills.*, clients.name as client_name, clients.meter_number, users.name as user_name, users.role as user_role')
-                    ->join('clients', 'clients.id = bills.client_id', 'left')
-                    ->join('users', 'users.id = bills.user_id', 'left')
+        return $this->buildDetailedBillsQuery()
                     ->where('users.role', 'normal')
                     ->orderBy('bills.billing_month', 'DESC')
                     ->findAll();
@@ -121,9 +127,7 @@ class BillModel extends Model
      */
     public function getNormalUserBillById($id)
     {
-        return $this->select('bills.*, clients.name as client_name, clients.meter_number, users.name as user_name, users.role as user_role')
-                    ->join('clients', 'clients.id = bills.client_id', 'left')
-                    ->join('users', 'users.id = bills.user_id', 'left')
+        return $this->buildDetailedBillsQuery()
                     ->where('bills.id', $id)
                     ->where('users.role', 'normal')
                     ->first();
@@ -132,12 +136,10 @@ class BillModel extends Model
     /**
      * Get bills by client ID created by normal users.
      */
-    public function getBillsByClientFromNormalUsers($clientId)
+    public function getBillsByClientFromNormalUsers($clientName)
     {
-        return $this->select('bills.*, clients.name as client_name, clients.meter_number, users.name as user_name, users.role as user_role')
-                    ->join('clients', 'clients.id = bills.client_id', 'left')
-                    ->join('users', 'users.id = bills.user_id', 'left')
-                    ->where('bills.client_id', $clientId)
+        return $this->buildDetailedBillsQuery()
+                    ->where('bills.name', $clientName)
                     ->where('users.role', 'normal')
                     ->orderBy('bills.billing_month', 'DESC')
                     ->findAll();
@@ -148,8 +150,11 @@ class BillModel extends Model
      */
     public function getBillsByMonth($month)
     {
-        return $this->where('MONTH(billing_month)', date('m', strtotime($month)))
-                    ->where('YEAR(billing_month)', date('Y', strtotime($month)))
+        $monthStart = date('Y-m-01', strtotime($month));
+        $monthEnd = date('Y-m-01', strtotime($monthStart . ' +1 month'));
+
+        return $this->where('billing_month >=', $monthStart)
+                    ->where('billing_month <', $monthEnd)
                     ->findAll();
     }
 }

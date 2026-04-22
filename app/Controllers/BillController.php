@@ -127,7 +127,7 @@ class BillController extends BaseController
             return redirect()->to('/billing/history');
         }
 
-        $bills = $this->billModel->getBillsByClientFromNormalUsers($clientId);
+        $bills = $this->billModel->getBillsByClientFromNormalUsers($client['name']);
         return view('bills/client_bills', [
             'client' => $client,
             'bills'  => $bills,

@@ -12,7 +12,8 @@
 <div class="dashboard-shell">
     <section class="dashboard-hero">
         <div>
-            <h1>Dashboard</h1>
+            <h1>WELCOME!</h1>
+            <h2><?= esc((string) (session()->get('user_name') ?: 'USER')) ?></h2>
         </div>
 
         <div class="dashboard-actions">

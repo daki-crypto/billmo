@@ -23,8 +23,8 @@ class Home extends BaseController
         
         if ($userRole === 'admin') {
             $allBills = $billModel
-                ->select('bills.*, clients.name as client_name, users.name as user_name')
-                ->join('clients', 'clients.id = bills.client_id', 'left')
+                ->select('bills.*, bills.name as client_name, users.name as user_name')
+                ->join('clients', 'clients.name = bills.name', 'left')
                 ->join('users', 'users.id = bills.user_id', 'left')
                 ->orderBy('bills.billing_month', 'DESC')
                 ->findAll();
@@ -51,7 +51,7 @@ class Home extends BaseController
             }, 0.0);
             $data['recentBills'] = array_slice($bills, 0, 5);
             $data['monthlyRevenueSeries'] = $this->buildMonthlySeries($bills);
-            $data['connectedClients'] = count(array_unique(array_filter(array_column($bills, 'client_id'))));
+            $data['connectedClients'] = count(array_unique(array_filter(array_column($bills, 'client_name'))));
             $data['averageBillAmount'] = $data['totalBillsComputed'] > 0
                 ? $data['totalEarnings'] / $data['totalBillsComputed']
                 : 0;

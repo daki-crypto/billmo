@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?? 'E-Billing System' ?></title>
     <!-- Bootstrap CSS -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= base_url('assets/css/ui/layout.css') ?>">
     <?= $this->renderSection('styles') ?>
@@ -51,19 +50,6 @@
         </aside>
 
         <div class="main-shell">
-            <div class="topbar">
-                <div class="topbar-actions">
-                    <a href="<?= base_url('audit') ?>" class="topbar-icon" title="Audit Logs">◔</a>
-                    <a href="<?= base_url('profile') ?>" class="profile-trigger">
-                        <span class="profile-avatar"><?= strtoupper(substr((string) session()->get('user_name'), 0, 1)) ?></span>
-                        <span class="profile-meta">
-                            <strong><?= esc((string) session()->get('user_name')) ?></strong>
-                            <span><?= esc((string) session()->get('user_email')) ?> · <?= ucfirst((string) session()->get('user_role')) ?></span>
-                        </span>
-                    </a>
-                </div>
-            </div>
-
             <div class="container">
                 <?php if (session()->getFlashdata('success')): ?>
                     <div class="alert alert-success">

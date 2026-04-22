@@ -61,7 +61,7 @@ class ClientModel extends Model
         $client = $this->find($clientId);
         if ($client) {
             $billModel = new BillModel();
-            $client['bills'] = $billModel->where('client_id', $clientId)->findAll();
+            $client['bills'] = $billModel->where('name', $client['name'])->findAll();
         }
         return $client;
     }

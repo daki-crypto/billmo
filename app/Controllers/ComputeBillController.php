@@ -57,6 +57,8 @@ class ComputeBillController extends BaseController
             return $this->response->setJSON(['success' => false, 'message' => 'Unauthorized access'])->setStatusCode(403);
         }
 
+        $userId = session()->get('user_id');
+
         $rules = [
             'client_name'    => 'required|max_length[100]',
             'meter_number'   => 'required|max_length[100]',
@@ -94,7 +96,7 @@ class ComputeBillController extends BaseController
             $client = $this->clientModel->find($clientId);
 
             $this->auditLogModel->logAction(
-                session()->get('user_id'),
+                $userId,
                 'CLIENT_CREATED',
                 'Auto-registered client: ' . $clientName . ' (Meter: ' . $meterNumber . ')'
             );
@@ -105,8 +107,8 @@ class ComputeBillController extends BaseController
         $total = $units * $rate;
 
         $this->billModel->insert([
-            'client_id'      => $client['id'],
-            'user_id'        => session()->get('user_id'),
+            'name'           => $clientName,
+            'user_id'        => $userId,
             'billing_month'  => $this->request->getPost('billing_month'),
             'units_consumed' => $units,
             'rate_per_unit'  => $rate,
@@ -115,9 +117,9 @@ class ComputeBillController extends BaseController
 
         // Log audit
         $this->auditLogModel->logAction(
-            session()->get('user_id'),
+            $userId,
             'BILL_COMPUTED',
-            'Computed bill for client ID: ' . $client['id']
+            'Computed bill for client: ' . $clientName
         );
 
         return $this->response->setJSON(['success' => true, 'message' => 'Bill computed successfully!', 'redirect' => base_url('billing/history')]);
@@ -134,9 +136,14 @@ class ComputeBillController extends BaseController
 
         $bills = $this->billModel->getBillsByUserWithDetails(session()->get('user_id'));
 
+        $totalAmount = 0;
+        foreach ($bills as $bill) {
+            $totalAmount += (float) $bill['total_amount'];
+        }
+
         $summary = [
             'totalBills' => count($bills),
-            'totalAmount' => array_sum(array_column($bills, 'total_amount')),
+            'totalAmount' => $totalAmount,
             'latestBillMonth' => ! empty($bills) ? $bills[0]['billing_month'] : null,
         ];
 
